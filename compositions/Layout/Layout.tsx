@@ -3,7 +3,7 @@ import { styled } from "@mui/material";
 
 import Header from "./Header";
 import Footer from "./Footer";
-import { Box, Stack } from "@/components";
+import { Box, LoadingPage, Stack } from "@/components";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   useEffect(() => {
@@ -14,6 +14,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <MainPage>
+      <LoadingPage />
       <Header />
       <MainContent className="main-content">{children}</MainContent>
       <Footer />
@@ -24,7 +25,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 const MainPage = styled(Stack)(({ theme }) => {
   return {
     minHeight: "100vh",
-    backgroundColor: theme.palette.background.default,
+    backgroundColor: theme.palette.secondary.main,
   };
 });
 
@@ -32,6 +33,5 @@ const MainContent = styled(Box)(({ theme }) => {
   return {
     flexGrow: 1,
     overflow: "hidden",
-    background: theme.palette.background.default,
   };
 });

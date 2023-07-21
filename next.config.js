@@ -51,7 +51,7 @@ const nextConfig = (phase) => {
     },
 
     // https://nextjs.org/docs/advanced-features/output-file-tracing#automatically-copying-traced-files
-    output: "standalone",
+    // output: "standalone",
     // the output: 'standalone' option should now work from the latest 12.2.0 release
   });
 };

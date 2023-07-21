@@ -10,7 +10,7 @@ class MyDocument extends Document {
           <meta name="emotion-insertion-point" content="" />
           {(this.props as any).emotionStyleTags}
         </Head>
-        <body>
+        <body style={{ overflow: "hidden" }}>
           <Main />
           <NextScript />
         </body>
@@ -18,6 +18,8 @@ class MyDocument extends Document {
     );
   }
 }
+
+// style={{}}
 
 MyDocument.getInitialProps = async (ctx) => {
   const originalRenderPage = ctx.renderPage;

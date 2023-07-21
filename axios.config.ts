@@ -1,4 +1,5 @@
 import axios from "axios";
+import { set } from "lodash";
 
 const instance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BASE_URL,

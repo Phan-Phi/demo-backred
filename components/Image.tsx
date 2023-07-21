@@ -7,7 +7,7 @@ type OmitKey = "alt";
 const defaultBlurDataURL =
   "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
 
-interface ImageProps extends Omit<NextImageProps, OmitKey> {
+export interface ImageProps extends Omit<NextImageProps, OmitKey> {
   alt?: string;
 }
 

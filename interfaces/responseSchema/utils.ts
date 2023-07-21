@@ -62,6 +62,11 @@ const BLOCK_TYPE_EMBED = object({
   }),
 });
 
+const BLOCK_TYPE_SEARCH_BAR_PLACEHOLDER = object({
+  block_type: string().oneOf(["placeholder"]).required(),
+  value: string().required(),
+});
+
 const PARENT_ITEM = object({
   id: number().required(),
   meta: object({
@@ -121,6 +126,7 @@ export {
   BLOCK_TYPE_EMBED,
   META_ITEM_PRODUCT,
   META_ITEM_NEWS,
+  BLOCK_TYPE_SEARCH_BAR_PLACEHOLDER,
   BLOCK_TYPE_ECOM_ICON,
 };
 
@@ -133,4 +139,7 @@ export type BlockTypeImage = InferType<typeof BLOCK_TYPE_IMAGE>;
 export type BlockTypeContent = InferType<typeof BLOCK_TYPE_CONTENT>;
 export type BlockTypeDocument = InferType<typeof BLOCK_TYPE_DOCUMENT>;
 export type BlockTypeEmbed = InferType<typeof BLOCK_TYPE_EMBED>;
+export type BlockTypeSearchPlaceholder = InferType<
+  typeof BLOCK_TYPE_SEARCH_BAR_PLACEHOLDER
+>;
 export type BlockTypeEcomIcon = InferType<typeof BLOCK_TYPE_ECOM_ICON>;

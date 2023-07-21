@@ -72,3 +72,5 @@ export { default as SnackbarSuccess } from "./SnackbarCustom/SnackbarSuccess";
 
 // SEO
 export { default as SEO } from "./SEO";
+
+export { default as LoadingPage } from "./LoadingPage";

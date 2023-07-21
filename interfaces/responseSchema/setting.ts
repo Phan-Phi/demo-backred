@@ -6,6 +6,7 @@ import {
   BLOCK_TYPE_WORKING_TIME,
   BLOCK_TYPE_HOTLINES,
   CONTACT_ICON,
+  BLOCK_TYPE_SEARCH_BAR_PLACEHOLDER,
   BLOCK_TYPE_ECOM_ICON,
 } from "./utils";
 
@@ -37,6 +38,7 @@ export let SettingSchema = object({
   footer_description: string().required(),
   footer_description_en: string().required(),
   site: number().required(),
+  search_bar_placeholders: array(BLOCK_TYPE_SEARCH_BAR_PLACEHOLDER).required(),
   footer_ecom_icon: array(BLOCK_TYPE_ECOM_ICON).required(),
 });
 
