@@ -26,12 +26,12 @@ export default function About(props: AboutPageProps) {
     <Box>
       <SEO {...getSeoObject(meta)} />
 
-      <Hero
+      {/* <Hero
         ratio="1200/740"
         img="/image/home-banner.png"
         title={subtitle}
         subTitle={title}
-      />
+      /> */}
 
       <Container>
         <Box sx={{ width: "20%", margin: "0 auto", padding: "1rem 0" }}>
