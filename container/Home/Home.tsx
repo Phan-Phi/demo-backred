@@ -73,12 +73,12 @@ export default function Home(props: HomePageProps) {
       <VatModal />
 
       {/* <Header /> */}
-      <Hero
+      {/* <Hero
         ratio="1200/740"
         img="/image/home-banner.png"
         title={banner_title}
         isHomePage={true}
-      />
+      /> */}
 
       <AboutSection data={data} aboutData={aboutData} />
 

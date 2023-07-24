@@ -22,7 +22,7 @@ export default function Contact(props: ContactProps) {
 
   return (
     <StyledWrapper className="contact">
-      <Hero subTitle={`${title}`} title={`${subTitle}`} img={imgSrc} />
+      {/* <Hero subTitle={`${title}`} title={`${subTitle}`} img={imgSrc} /> */}
 
       <StyledContainer>
         <FormContact />

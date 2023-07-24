@@ -182,12 +182,12 @@ export default function ProductList(props: ProductListProps) {
 
   return (
     <StyledWrapper className="product-list">
-      <Hero
+      {/* <Hero
         ratio="1200/740"
         img={dataBanner[0].banner}
         subTitle={dataBanner[0].title}
         title={dataBanner[0].subtitle}
-      />
+      /> */}
 
       <StyledContainer>
         <StyledStack>

@@ -32,7 +32,7 @@ export default function NewsDetail(props: NewsPageProps) {
       <SEO {...getSeoObject(meta)} />
 
       <Box>
-        <Hero ratio="1200/740" img={banner} title={title} isHomePage={true} />
+        {/* <Hero ratio="1200/740" img={banner} title={title} isHomePage={true} /> */}
       </Box>
 
       <Container>

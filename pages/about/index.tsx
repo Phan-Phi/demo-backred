@@ -4,11 +4,11 @@ import { PAGES_API, TYPE_PARAMS } from "@/apis";
 import { Box } from "@/components";
 
 import { GetServerSidePropsContext } from "next";
-// import About, { AboutPageProps } from "@/container/About/About";
+import About, { AboutPageProps } from "@/container/About/About";
 
 export default function AboutPage(props: any) {
-  // return <About {...props} />;
-  return <Box></Box>;
+  return <About {...props} />;
+  // return <Box></Box>;
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {

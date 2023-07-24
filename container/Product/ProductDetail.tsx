@@ -67,12 +67,12 @@ export default function ProductDetail(props: ProductDetailProps) {
 
   return (
     <StyledWrapper className="product-detail">
-      <Hero
+      {/* <Hero
         ratio="1200/740"
         img={dataBanner[0].banner}
         subTitle="Sản phẩm"
         title="Chi tiết sản phẩm"
-      />
+      /> */}
 
       <StyledContainer>
         <Grid container spacing="40px">

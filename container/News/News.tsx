@@ -146,12 +146,12 @@ export default function News(props: NewsPageProps) {
     <Box>
       <SEO {...getSeoObject(meta)} />
 
-      <Hero
+      {/* <Hero
         ratio="1200/740"
         img="/image/home-banner.png"
         title={subtitle}
         subTitle={title}
-      />
+      /> */}
 
       <Box sx={{ margin: "80px 0 40px 0" }}>{renderTabProduct}</Box>
 
