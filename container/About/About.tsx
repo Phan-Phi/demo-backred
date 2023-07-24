@@ -1,7 +1,7 @@
 import { get } from "lodash";
 import dynamic from "next/dynamic";
 
-import { Container } from "@mui/material";
+import { Container, Typography } from "@mui/material";
 import { useCart, useSetting } from "@/hooks";
 import { Hero, RenderContent } from "@/compositions";
 import { Box, Headline, ImageRatio, SEO } from "@/components";
@@ -26,7 +26,7 @@ export default function About(props: AboutPageProps) {
   return (
     <Box>
       <SEO {...getSeoObject(meta)} />
-
+      <Typography>sadasd</Typography>
       {/* <Hero
         ratio="1200/740"
         img="/image/home-banner.png"
