@@ -11,12 +11,16 @@ const nextConfig = (phase) => {
   return withBundleAnalyzer({
     enabled: process.env.ANALYZE === "true",
   })({
+    test: /\.node/,
+    use: "raw-loader",
+
     reactStrictMode: true,
     swcMinify: true,
     i18n: {
       locales: ["vi", "en"],
       defaultLocale: "vi",
     },
+
     images: {
       domains: [process.env.BASE_URL],
       remotePatterns: [
