@@ -24,21 +24,21 @@ export default function About(props: AboutPageProps) {
 
   return (
     <Box>
-      {/* <SEO {...getSeoObject(meta)} /> */}
+      <SEO {...getSeoObject(meta)} />
 
-      {/* <Hero
+      <Hero
         ratio="1200/740"
         img="/image/home-banner.png"
         title={subtitle}
         subTitle={title}
-      /> */}
+      />
 
       <Container>
-        {/* <Box sx={{ width: "20%", margin: "0 auto", padding: "1rem 0" }}>
+        <Box sx={{ width: "20%", margin: "0 auto", padding: "1rem 0" }}>
           <ImageRatio ratio="276/276" imageProps={{ src: logo }} />
-        </Box> */}
+        </Box>
 
-        {/* <RenderContent data={histories} /> */}
+        <RenderContent data={histories} />
 
         <Box sx={{ marginTop: "2.5rem" }}>
           {/* <Headline subTitle="THÀNH TÍCH ĐẠT ĐƯỢC" title="Chứng nhận & Chứng chỉ" /> */}
