@@ -34,9 +34,9 @@ export default function About(props: AboutPageProps) {
       /> */}
 
       <Container>
-        <Box sx={{ width: "20%", margin: "0 auto", padding: "1rem 0" }}>
+        {/* <Box sx={{ width: "20%", margin: "0 auto", padding: "1rem 0" }}>
           <ImageRatio ratio="276/276" imageProps={{ src: logo }} />
-        </Box>
+        </Box> */}
 
         <RenderContent data={histories} />
 
