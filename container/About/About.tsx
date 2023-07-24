@@ -7,6 +7,7 @@ import { Hero, RenderContent } from "@/compositions";
 import { Box, Headline, ImageRatio, SEO } from "@/components";
 import { IPage, AboutPage, responseSchema } from "@/interfaces";
 import { getSeoObject } from "@/libs";
+import AboutCertificates from "./components/AboutCertificates";
 
 // const AboutCertificates = dynamic(import("./components/AboutCertificates"), {
 //   ssr: false,
@@ -42,7 +43,11 @@ export default function About(props: AboutPageProps) {
 
         <Box sx={{ marginTop: "2.5rem" }}>
           {/* <Headline subTitle="THÀNH TÍCH ĐẠT ĐƯỢC" title="Chứng nhận & Chứng chỉ" /> */}
-
+          <AboutCertificates
+            isExported={isExported}
+            export_certificates={export_certificates}
+            local_certificates={local_certificates}
+          />
           {/* {isExported === null ? null : (
             <AboutCertificates
               isExported={isExported}
