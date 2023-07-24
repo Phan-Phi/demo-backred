@@ -24,7 +24,7 @@ export default function About(props: AboutPageProps) {
 
   return (
     <Box>
-      <SEO {...getSeoObject(meta)} />
+      {/* <SEO {...getSeoObject(meta)} /> */}
 
       {/* <Hero
         ratio="1200/740"
@@ -38,7 +38,7 @@ export default function About(props: AboutPageProps) {
           <ImageRatio ratio="276/276" imageProps={{ src: logo }} />
         </Box> */}
 
-        <RenderContent data={histories} />
+        {/* <RenderContent data={histories} /> */}
 
         <Box sx={{ marginTop: "2.5rem" }}>
           {/* <Headline subTitle="THÀNH TÍCH ĐẠT ĐƯỢC" title="Chứng nhận & Chứng chỉ" /> */}
