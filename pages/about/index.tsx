@@ -1,11 +1,14 @@
 import { transformUrl } from "@/libs";
 import prefetchData from "@/libs/prefetchData";
 import { PAGES_API, TYPE_PARAMS } from "@/apis";
-import { GetServerSidePropsContext } from "next";
-import About, { AboutPageProps } from "@/container/About/About";
+import { Box } from "@/components";
 
-export default function AboutPage(props: AboutPageProps) {
-  return <About {...props} />;
+import { GetServerSidePropsContext } from "next";
+// import About, { AboutPageProps } from "@/container/About/About";
+
+export default function AboutPage(props: any) {
+  // return <About {...props} />;
+  return <Box></Box>;
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
