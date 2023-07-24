@@ -8,9 +8,9 @@ import { Box, Headline, ImageRatio, SEO } from "@/components";
 import { IPage, AboutPage, responseSchema } from "@/interfaces";
 import { getSeoObject } from "@/libs";
 
-const AboutCertificates = dynamic(import("./components/AboutCertificates"), {
-  ssr: false,
-});
+// const AboutCertificates = dynamic(import("./components/AboutCertificates"), {
+//   ssr: false,
+// });
 
 export type AboutPageProps = IPage<[responseSchema<AboutPage>]>;
 
@@ -43,13 +43,13 @@ export default function About(props: AboutPageProps) {
         <Box sx={{ marginTop: "2.5rem" }}>
           <Headline subTitle="THÀNH TÍCH ĐẠT ĐƯỢC" title="Chứng nhận & Chứng chỉ" />
 
-          {isExported === null ? null : (
+          {/* {isExported === null ? null : (
             <AboutCertificates
               isExported={isExported}
               export_certificates={export_certificates}
               local_certificates={local_certificates}
             />
-          )}
+          )} */}
         </Box>
       </Container>
     </Box>
