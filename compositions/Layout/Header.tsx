@@ -1,7 +1,7 @@
-import { useMemo } from "react";
 import { styled } from "@mui/material";
 import { useWindowScroll } from "react-use";
 
+import { useMemo } from "react";
 import { Box } from "@/components";
 import { useMedia } from "@/hooks";
 import { NAVBAR_ROUTES } from "@/routes";

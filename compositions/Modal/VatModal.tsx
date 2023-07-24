@@ -1,11 +1,14 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Button, Modal, Typography, styled } from "@mui/material";
 
 import { Box, Stack } from "@/components";
 import { useCart } from "@/hooks";
 
+import { CART_API } from "@/apis";
+import axiosConfig from "../../axios.config";
+
 export default function VatModal() {
-  const { setIsExported } = useCart();
+  const { setIsExported, setCartKey, cartKey } = useCart();
   const [open, setOpen] = useState(true);
 
   const handleOpen = useCallback(() => {
@@ -21,6 +24,16 @@ export default function VatModal() {
     setIsExported(false);
     setOpen(false);
   }, []);
+
+  useEffect(() => {
+    if (cartKey) {
+      return;
+    } else {
+      axiosConfig
+        .get(CART_API)
+        .then((response) => setCartKey(response.headers["x-cart-key"]));
+    }
+  }, [cartKey]);
 
   return (
     <StyledModal

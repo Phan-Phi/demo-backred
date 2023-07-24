@@ -104,12 +104,16 @@ const META_ITEM_NEWS = object({
 });
 
 const META_ITEM_PRODUCT = object({
-  type: string().required(),
+  alias_of: mixed(),
   detail_url: string().required(),
-  html_url: string().nullable(),
-  slug: string().required(),
   first_published_at: string().required(),
+  html_url: string().nullable(),
   locale: string().required(),
+  parent: mixed(),
+  show_in_menus: boolean().required(),
+  slug: string().required(),
+  type: string().required(),
+  url_path: string().required(),
 });
 
 export {

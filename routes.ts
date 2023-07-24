@@ -19,9 +19,9 @@ export const NAVBAR_ROUTES = [
     link: "about",
   },
   {
-    key: "product",
-    name: "Sản Phẩm",
-    link: "product",
+    key: "brand",
+    name: "Thương Hiệu",
+    link: "brand",
   },
   {
     key: "news",

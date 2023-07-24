@@ -7,7 +7,6 @@ export default function Title({ children, ...restProps }: TypographyProps) {
 const StyledTitle = styled(Typography)(({ theme }) => {
   return {
     ...theme.typography.BungeeText,
-    color: "#fff",
     textTransform: "uppercase",
   };
 });

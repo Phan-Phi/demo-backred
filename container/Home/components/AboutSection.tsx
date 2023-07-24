@@ -1,17 +1,19 @@
-import { Container, Grid, Typography, styled } from "@mui/material";
+import { Container, Grid, styled } from "@mui/material";
 
-import { Ratio, Image, Headline, Stack } from "@/components";
-import { useMedia } from "@/hooks";
-import { ABOUT_SECTION_RATIO } from "@/constants";
-import { HomePage } from "@/interfaces";
 import { useMemo } from "react";
+import { useMedia } from "@/hooks";
+import { AboutPage, HomePage } from "@/interfaces";
 import { RenderHTML } from "@/compositions";
+import { ABOUT_SECTION_RATIO } from "@/constants";
+import { Ratio, Image, Headline, Stack } from "@/components";
 
 interface Props {
   data: HomePage;
+  aboutData: AboutPage;
 }
 
-export default function AboutSection({ data }: Props) {
+export default function AboutSection({ data, aboutData }: Props) {
+  const { title, subtitle } = aboutData;
   const { about_us_content, about_us_images, about_us_title } = data;
 
   const { isSmDown, isMdDown, isMdUp } = useMedia();
@@ -33,7 +35,12 @@ export default function AboutSection({ data }: Props) {
       return (
         <Grid key={idx} item xs={12} sm={4} md={idx === 0 ? 12 : 6}>
           <Ratio ratio={idx === 0 ? device : device2}>
-            <Image src={el.value} alt="" className={idx === 0 ? "" : "child"} />
+            <Image
+              src={el.value}
+              alt=""
+              style={{ objectFit: "cover" }}
+              className={idx === 0 ? "" : "child"}
+            />
           </Ratio>
         </Grid>
       );
@@ -45,7 +52,7 @@ export default function AboutSection({ data }: Props) {
       <StyledGrid container spacing={5}>
         <Grid item xs={12} sm={12} md={6}>
           <Stack spacing={2.3}>
-            <Headline title={about_us_title} subTitle="VỀ CHÚNG TÔI" />
+            <Headline title={subtitle} subTitle={title} />
 
             <StyledContent data={about_us_content} />
           </Stack>

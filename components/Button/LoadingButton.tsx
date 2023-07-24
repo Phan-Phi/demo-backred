@@ -1,8 +1,12 @@
 import React from "react";
-import { Button, styled, CircularProgress } from "@mui/material";
+import { Button, styled, CircularProgress, ButtonProps } from "@mui/material";
 
-export default function LoadingButton() {
-  return <StyledButton startIcon={<Loading />}>Đang xử lý...</StyledButton>;
+export default function LoadingButton(props: ButtonProps) {
+  return (
+    <StyledButton startIcon={<Loading />} {...props}>
+      Đang xử lý...
+    </StyledButton>
+  );
 }
 
 const Loading = () => {

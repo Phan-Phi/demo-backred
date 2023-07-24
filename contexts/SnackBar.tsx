@@ -1,6 +1,12 @@
 import { useRef } from "react";
 import { SnackbarProvider } from "notistack";
-import { SnackbarError, SnackbarSuccess } from "@/components";
+import { SnackbarAddToCart, SnackbarError, SnackbarSuccess } from "@/components";
+
+declare module "notistack" {
+  interface VariantOverrides {
+    addToCart: true;
+  }
+}
 
 type SnackProps = {
   children: React.ReactNode;
@@ -24,6 +30,7 @@ const SnackBar = ({ children }: SnackProps) => {
       Components={{
         success: SnackbarSuccess,
         error: SnackbarError,
+        addToCart: SnackbarAddToCart,
       }}
       hideIconVariant={true}
     >

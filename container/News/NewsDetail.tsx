@@ -2,10 +2,11 @@ import { get } from "lodash";
 import { useMemo } from "react";
 import { Container, styled } from "@mui/material";
 
-import { IPage, NewsListingPage, NewsPage, responseSchema } from "@/interfaces";
-import { Box, Headline } from "@/components";
+import { getSeoObject } from "@/libs";
+import { Box, SEO } from "@/components";
 import { Hero, RenderHTML } from "@/compositions";
 import RelatedPosts from "./components/RelatedPosts";
+import { IPage, NewsListingPage, NewsPage, responseSchema } from "@/interfaces";
 
 export type NewsPageProps = IPage<
   [responseSchema<NewsListingPage>, NewsPage, responseSchema<NewsPage>]
@@ -28,7 +29,11 @@ export default function NewsDetail(props: NewsPageProps) {
 
   return (
     <Box>
-      <Hero ratio="1200/740" img={banner} title={title} />
+      <SEO {...getSeoObject(meta)} />
+
+      <Box>
+        <Hero ratio="1200/740" img={banner} title={title} isHomePage={true} />
+      </Box>
 
       <Container>
         <Wrapper>{renderHTML}</Wrapper>

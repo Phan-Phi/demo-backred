@@ -98,7 +98,6 @@ const StyledText = styled(Typography)(({ theme }) => {
   return {
     ...theme.typography.p_large,
     fontWeight: 600,
-    color: "white",
     marginTop: -8,
   };
 });
@@ -107,12 +106,12 @@ const StyledLink = styled(Link)(({ theme }) => {
   return {
     ...theme.typography.p_large,
     fontWeight: 600,
-    color: "white",
     marginTop: -8,
+    color: theme.palette.text.primary,
   };
 });
 
-const StyledLine = styled(Box)(() => {
+const StyledLine = styled(Box)(({ theme }) => {
   return {
     width: 8,
     height: 1,
@@ -120,7 +119,7 @@ const StyledLine = styled(Box)(() => {
 
     top: -5,
     position: "relative",
-    backgroundColor: "white",
+    backgroundColor: theme.palette.text.primary,
   };
 });
 

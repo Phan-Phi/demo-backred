@@ -13,6 +13,9 @@ import { Input, InputProps, styled } from "@mui/material";
 
 import { useSetting } from "@/hooks";
 import SearchOutlined from "@/components/Icon/SearchOutlined";
+import { ROUTES } from "@/routes";
+import { useRouter } from "next/router";
+import { Box } from "@/components";
 
 interface SearchInputProps extends Omit<InputProps, "onChange"> {
   onChange?: (value: string) => void;
@@ -27,6 +30,9 @@ export const SearchInput = forwardRef<
   },
   SearchInputProps
 >(function SearchInput(props, ref) {
+  const router = useRouter();
+  const { locale } = router;
+
   const {
     initSearch,
     debounceTime = 500,
@@ -51,6 +57,25 @@ export const SearchInput = forwardRef<
     setSearch(e.target.value);
   }, []);
 
+  const onSearchKeywordHandler = useCallback(
+    (keyword: string) => {
+      return (e: React.BaseSyntheticEvent) => {
+        e.preventDefault();
+
+        if (keyword === "") return;
+
+        const pathname = `/${ROUTES.product}?search=${keyword}`;
+
+        router.push(pathname, pathname, {
+          locale,
+        });
+
+        setSearch("");
+      };
+    },
+    [locale]
+  );
+
   useImperativeHandle(
     ref,
     () => {
@@ -72,16 +97,18 @@ export const SearchInput = forwardRef<
   );
 
   return (
-    <StyledInput
-      className="search-input"
-      value={search}
-      fullWidth
-      placeholder={!isTypewriterEffect ? "Tìm kiếm sản phẩm..." : text}
-      endAdornment={<StyledSearchOutlined />}
-      onChange={onValueChange}
-      inputRef={inputRef}
-      {...restProps}
-    />
+    <Box onSubmit={onSearchKeywordHandler(search)} width="100%">
+      <StyledInput
+        className="search-input"
+        value={search}
+        fullWidth
+        placeholder={!isTypewriterEffect ? "Tìm kiếm sản phẩm..." : text}
+        endAdornment={<StyledSearchOutlined />}
+        onChange={onValueChange}
+        inputRef={inputRef}
+        {...restProps}
+      />
+    </Box>
   );
 });
 

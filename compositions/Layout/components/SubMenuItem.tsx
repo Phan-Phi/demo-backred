@@ -1,7 +1,7 @@
-import { useMemo } from "react";
 import { useRouter } from "next/router";
 import { Typography, styled } from "@mui/material";
 
+import { useMemo } from "react";
 import { useFetch } from "@/hooks";
 import { transformUrl } from "@/libs";
 import { Box, Stack } from "@/components";
@@ -37,7 +37,7 @@ export default function SubMenuItem() {
   }, [data]);
 
   return (
-    <SubMenu className="submenu1">
+    <SubMenu className="submenu">
       <WrapperExpandSubMenu>{render}</WrapperExpandSubMenu>
     </SubMenu>
   );
@@ -60,6 +60,9 @@ const SubMenu = styled(Box)(({ theme }) => {
     transition: "all 0.5s  ease",
     transform: "rotate3d(1,0,0,-90deg)",
     transformOrigin: "0 0 0",
+    background: "rgba(38, 38, 38, 0.8)",
+    backdropFilter: "blur(5px)",
+    boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
   };
 });
 

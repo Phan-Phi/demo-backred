@@ -6,21 +6,25 @@ import { Hero } from "@/compositions";
 import { Spacing } from "@/components";
 import FormContact from "./components/FormContact";
 import Information from "./components/Information";
+import { CONTACT_PAGE_TYPE, IPage, responseSchema } from "@/interfaces";
+import { get } from "lodash";
 
-import { useSetting } from "@/hooks";
+export type ContactProps = IPage<[responseSchema<CONTACT_PAGE_TYPE>]>;
 
-export default function Contact() {
-  const setting = useSetting();
+export default function Contact(props: ContactProps) {
+  const data = get(props, "initData[0].items[0]");
+
+  const subTitle = get(data, "subtitle");
+  const title = get(data, "title");
+  const imgSrc = get(data, "banner");
+
+  if (data == undefined) return null;
 
   return (
     <StyledWrapper className="contact">
-      <StyledContainer>
-        <Hero
-          subTitle="Liên Lạc"
-          title="Để lại lời nhắn"
-          img="/image/about-section.png"
-        />
+      <Hero subTitle={`${title}`} title={`${subTitle}`} img={imgSrc} />
 
+      <StyledContainer>
         <FormContact />
 
         <Spacing spacing={5} />

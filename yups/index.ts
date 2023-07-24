@@ -1,7 +1,8 @@
 import { setLocale } from "yup";
 
-export * from "./contact/contact";
 export * from "./vat/vat";
+export * from "./order/order";
+export * from "./contact/contact";
 
 setLocale({
   mixed: {

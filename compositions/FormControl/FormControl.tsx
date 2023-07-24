@@ -34,8 +34,8 @@ export default function FormControl(props: FormControlProps) {
       }}
       FormLabelProps={{
         children: label,
-        ...FormLabelProps,
         htmlFor: name,
+        ...FormLabelProps,
       }}
       InputProps={{
         placeholder,

@@ -2,10 +2,10 @@ import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import { get, isEmpty } from "lodash";
-import { Box, Container, Grid, Stack, styled } from "@mui/material";
+import { Box, Container, Grid, Stack, Tab, styled } from "@mui/material";
 
 import Sort from "./components/Sort";
-import { CardProductItem, Image, LoadingProduct, Pagination } from "@/components";
+import { CardProductItem, LoadingProduct, Pagination, Tabs } from "@/components";
 
 import {
   IPage,
@@ -21,70 +21,74 @@ import { PAGES_API, TYPE_PARAMS } from "@/apis";
 import { useCart, useFetch, useMedia } from "@/hooks";
 
 export type ProductListProps = IPage<
-  [
-    responseSchema<PRODUCT_CATEGORY_LISTING_TYPE>,
-    responseSchema<PRODUCT_CATEGORY_DETAIL>,
-    responseSchema<PRODUCTS>,
-  ]
+  [responseSchema<PRODUCT_CATEGORY_LISTING_TYPE>, responseSchema<PRODUCT_CATEGORY_DETAIL>]
 >;
+
+const tabAll = { id: 0, title: "Tất Cả" };
 
 export default function ProductList(props: ProductListProps) {
   const dataBanner = get(props, "initData[0].items");
   const dataBrand = get(props, "initData[1].items");
-  const totalCount = get(props, "initData[2].meta.total_count");
+  const tabsData = [tabAll, ...dataBrand];
 
   const router = useRouter();
   const { isExported } = useCart();
   const { isMdDown } = useMedia();
+
+  const [category, setCategory] = useState(0);
 
   const [filter, setFilter] = useState({
     limit: 8,
     offset: "0",
     fields: "*",
     is_exported: isExported,
-    descendant_of: router.query.category,
+    locale: router.locale,
     type: TYPE_PARAMS["product.ProductPage"],
   });
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
 
-  const { data, isLoading, changeKey } = useFetch<PRODUCTS>(
+  const { data, isLoading, changeKey, resData } = useFetch<PRODUCTS>(
     transformUrl(PAGES_API, filter)
   );
 
   useEffect(() => {
-    if (totalCount == undefined) return;
+    if (resData == undefined) return;
+
+    const totalCount = resData.meta.total_count;
 
     if (isMdDown) {
       setTotalPage(Math.ceil(totalCount / 6));
     } else {
       setTotalPage(Math.ceil(totalCount / 8));
     }
-  }, [totalCount, isMdDown]);
+  }, [resData, isMdDown]);
 
   useEffect(() => {
-    changeKey(
-      transformUrl(PAGES_API, {
-        ...filter,
-        is_exported: isExported,
-        descendant_of: router.query.category,
-      })
-    );
+    const categoryId = Number(router.query.category);
+
+    if (router.query.category) {
+      changeKey(
+        transformUrl(PAGES_API, {
+          ...filter,
+          is_exported: isExported,
+          descendant_of: categoryId,
+        })
+      );
+      setCategory(categoryId);
+    } else {
+      changeKey(
+        transformUrl(PAGES_API, {
+          ...filter,
+          is_exported: isExported,
+        })
+      );
+      setCategory(0);
+    }
 
     setCurrentPage(1);
-  }, [isExported, router, filter]);
-
-  const renderLogoBrand = useMemo(() => {
-    if (dataBrand == undefined) return null;
-    return dataBrand.map((item, index) => {
-      return (
-        <Box position="relative" key={index} width={176} height={96}>
-          <Image src={item.banner} alt={item.title} />
-        </Box>
-      );
-    });
-  }, [dataBrand]);
+  }, [isExported]);
 
   const renderProducts = useMemo(() => {
     const LoadingComponent = <LoadingProduct />;
@@ -120,19 +124,58 @@ export default function ProductList(props: ProductListProps) {
     return content;
   }, [data]);
 
+  const handleChangeCategory = useCallback(
+    (event: React.SyntheticEvent, value: number) => {
+      if (value === 0) {
+        changeKey(
+          transformUrl(PAGES_API, {
+            ...filter,
+            is_exported: isExported,
+            locale: router.locale,
+          })
+        );
+      } else {
+        changeKey(
+          transformUrl(PAGES_API, {
+            ...filter,
+            is_exported: isExported,
+            descendant_of: value,
+            locale: router.locale,
+          })
+        );
+      }
+      setCategory(value);
+      setCurrentPage(1);
+      // router.replace("/product", undefined, { shallow: true });
+    },
+    [isExported, router]
+  );
+
   const handlePagination = useCallback(
     (event: React.SyntheticEvent, page: number) => {
       setCurrentPage(page);
       if (currentPage === page) return;
 
-      changeKey(
-        transformUrl(PAGES_API, {
-          ...filter,
-          offset: (page - 1) * filter.limit,
-        })
-      );
+      if (category === 0) {
+        changeKey(
+          transformUrl(PAGES_API, {
+            ...filter,
+            offset: (page - 1) * filter.limit,
+            locale: router.locale,
+          })
+        );
+      } else {
+        changeKey(
+          transformUrl(PAGES_API, {
+            ...filter,
+            offset: (page - 1) * filter.limit,
+            descendant_of: category,
+            locale: router.locale,
+          })
+        );
+      }
     },
-    [currentPage, filter]
+    [currentPage, filter, category, router]
   );
 
   if (dataBanner == undefined || dataBrand == undefined) return null;
@@ -142,13 +185,19 @@ export default function ProductList(props: ProductListProps) {
       <Hero
         ratio="1200/740"
         img={dataBanner[0].banner}
-        subTitle="Sản phẩm nổi bật"
-        title="Món Ngon Tuyệt Hảo"
+        subTitle={dataBanner[0].title}
+        title={dataBanner[0].subtitle}
       />
 
       <StyledContainer>
         <StyledStack>
-          <StyledCenter className="product-logo-brand">{renderLogoBrand}</StyledCenter>
+          <StyledCenter className="product-list-tabs">
+            <Tabs value={category} onChange={handleChangeCategory}>
+              {tabsData.map((item) => {
+                return <Tab key={item.id} label={item.title} value={item.id} />;
+              })}
+            </Tabs>
+          </StyledCenter>
 
           <StyledWrapperFilter>
             <Box />
@@ -158,13 +207,7 @@ export default function ProductList(props: ProductListProps) {
 
           {renderProducts}
 
-          {totalCount && (
-            <Pagination
-              page={currentPage}
-              count={totalPage}
-              onchange={handlePagination}
-            />
-          )}
+          <Pagination page={currentPage} count={totalPage} onchange={handlePagination} />
         </StyledStack>
       </StyledContainer>
     </StyledWrapper>

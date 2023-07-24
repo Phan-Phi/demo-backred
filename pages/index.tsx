@@ -55,6 +55,12 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         fields: "*",
         locale,
       }),
+
+      transformUrl(PAGES_API, {
+        type: TYPE_PARAMS["about.AboutPage"],
+        fields: "*",
+        locale,
+      }),
     ];
 
     const { resList, fallback } = await prefetchData(urls, {

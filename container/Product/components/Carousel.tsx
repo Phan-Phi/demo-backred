@@ -6,6 +6,7 @@ import React, { useMemo } from "react";
 
 import { Box, styled } from "@mui/material";
 
+import { IMAGES_TYPE } from "../ProductDetail";
 import { PRODUCT_DETAIL_IMG_RATIO } from "@/constants";
 import { ImageRatio, NextArrow, PrevArrow } from "@/components";
 
@@ -19,32 +20,25 @@ const settings = {
   prevArrow: <PrevArrow />,
 };
 
-const fake_data = [
-  {
-    id: 1,
-    imgSrc: "/image/cardProduct.png",
-  },
-  {
-    id: 2,
-    imgSrc: "/image/cardProduct.png",
-  },
-];
+type CarouselProps = {
+  data: IMAGES_TYPE[];
+};
 
-export default function Carousel() {
+export default function Carousel({ data }: CarouselProps) {
   const renderImg = useMemo(() => {
-    if (fake_data == undefined) return null;
+    if (data == undefined) return null;
 
-    return fake_data.map((item) => {
+    return data.map((item, index) => {
       return (
         <ImageRatio
-          key={item.id}
+          key={index}
           ratio={PRODUCT_DETAIL_IMG_RATIO}
           boxProps={{ sx: { pointerEvents: "none" } }}
-          imageProps={{ src: item.imgSrc, alt: "alt" }}
+          imageProps={{ src: item.value, alt: "alt" }}
         />
       );
     });
-  }, [fake_data]);
+  }, [data]);
 
   return (
     <StyledWrapper>

@@ -27,12 +27,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         fields: "*",
         locale,
       }),
-      transformUrl(PAGES_API, {
-        type: TYPE_PARAMS["product.ProductPage"],
-        fields: "*",
-        locale,
-        descendant_of: query.category,
-      }),
     ];
 
     const { fallback, resList } = await prefetchData(urls, { locale });

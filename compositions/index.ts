@@ -22,3 +22,5 @@ export { default as VideoModal } from "./Modal/VideoModal";
 export { default as RenderContent } from "./RenderHTML/RenderContent";
 export { default as RenderHTML } from "./RenderHTML/RenderHTML";
 export { default as RenderEmbeded } from "./RenderHTML/RenderEmbeded";
+
+export { default as Language } from "./Layout/components/Language";

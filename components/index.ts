@@ -56,6 +56,7 @@ export { default as CartIcon } from "./Icon/CartIcon";
 export { default as ClearIcon } from "./Icon/ClearIcon";
 export { default as VideoIcon } from "./Icon/VideoIcon";
 export { default as UncheckIcon } from "./Icon/UncheckIcon";
+export { default as CheckedIcon } from "./Icon/CheckedIcon";
 export { default as ArrowDownIcon } from "./Icon/ArrowDownIcon";
 export { default as SearchOutlined } from "./Icon/SearchOutlined";
 export { default as ExpandMoreIcon } from "./Icon/ExpandMoreIcon";
@@ -69,6 +70,7 @@ export { default as LoadingButton } from "./Button/LoadingButton";
 // Snackbar Custom
 export { default as SnackbarError } from "./SnackbarCustom/SnackbarError";
 export { default as SnackbarSuccess } from "./SnackbarCustom/SnackbarSuccess";
+export { default as SnackbarAddToCart } from "./SnackbarCustom/SnackbarAddToCart";
 
 // SEO
 export { default as SEO } from "./SEO";

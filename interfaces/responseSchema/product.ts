@@ -1,4 +1,9 @@
-import { META_ITEM, BLOCK_TYPE_IMAGE, BLOCK_TYPE_CONTENT } from "./utils";
+import {
+  META_ITEM,
+  BLOCK_TYPE_IMAGE,
+  BLOCK_TYPE_CONTENT,
+  META_ITEM_PRODUCT,
+} from "./utils";
 import { InferType, array, boolean, number, object, string } from "yup";
 
 export let ProductCategoryListing = object({
@@ -20,13 +25,13 @@ export let ProductCategoryDetail = object({
 
 export let Products = object({
   id: number().required(),
-  meta: META_ITEM,
+  meta: META_ITEM_PRODUCT,
   title: string().required(),
   last_published_at: string().required(),
   is_exported: boolean().required(),
   images: array(BLOCK_TYPE_IMAGE).required(),
   unit: string().required(),
-  description: BLOCK_TYPE_CONTENT,
+  description: array(BLOCK_TYPE_CONTENT).required(),
 });
 
 export let ProductVariants = object({

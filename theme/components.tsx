@@ -9,6 +9,7 @@ import {
   NextButton,
   UncheckIcon,
   ArrowDownIcon,
+  CheckedIcon,
 } from "@/components";
 
 export const ComponentsTheme: Components<Omit<Theme, "components">> = {
@@ -36,12 +37,19 @@ export const ComponentsTheme: Components<Omit<Theme, "components">> = {
   },
   MuiTabs: {
     styleOverrides: {
-      root: {
-        "& .MuiTabs-flexContainer": {
-          display: "flex",
-          flexDirection: "row !important",
-          justifyContent: "center !important",
-        },
+      root: ({ theme }) => {
+        return {
+          "& .MuiTabs-flexContainer": {
+            display: "flex",
+            flexDirection: "row !important",
+            justifyContent: "center !important",
+            "& .Mui-selected": {
+              "& .MuiTypography-root": {
+                color: `${theme.palette.primary.main} !important`,
+              },
+            },
+          },
+        };
       },
     },
   },
@@ -52,11 +60,11 @@ export const ComponentsTheme: Components<Omit<Theme, "components">> = {
     },
 
     styleOverrides: {
-      root: {
-        ...typographyTheme["p_small"],
-        fontWeight: 500,
-        color: "white",
-        textTransform: "capitalize",
+      root: ({ theme }) => {
+        return {
+          fontWeight: 500,
+          textTransform: "capitalize",
+        };
       },
     },
   },
@@ -76,11 +84,11 @@ export const ComponentsTheme: Components<Omit<Theme, "components">> = {
           borderRadius: "6px",
           padding: "0.5rem 1rem",
 
-          [PSEUDO_STATE.hover]: {
-            backgroundColor: theme.palette.primary.main,
-            opacity: 0.7,
-            transition: "opacity 0.5s ease",
-          },
+          // [PSEUDO_STATE.hover]: {
+          //   backgroundColor: theme.palette.primary.main,
+          //   opacity: 0.7,
+          //   transition: "opacity 0.5s ease",
+          // },
 
           [COMPONENT_STATE.disabled]: {
             backgroundColor: "#f5f5f5",
@@ -92,7 +100,7 @@ export const ComponentsTheme: Components<Omit<Theme, "components">> = {
           backgroundColor: theme.palette.primary.main,
           transition: "all .4s ease",
           "&:hover": {
-            backgroundColor: theme.palette.primary.main,
+            backgroundColor: theme.palette.primary.light,
           },
         };
       },
@@ -164,6 +172,7 @@ export const ComponentsTheme: Components<Omit<Theme, "components">> = {
   MuiCheckbox: {
     defaultProps: {
       icon: <UncheckIcon />,
+      checkedIcon: <CheckedIcon />,
     },
   },
 

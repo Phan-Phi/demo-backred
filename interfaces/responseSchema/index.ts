@@ -5,3 +5,5 @@ export * from "./news";
 export * from "./utils";
 export * from "./address";
 export * from "./product";
+export * from "./contact";
+export * from "./cart";

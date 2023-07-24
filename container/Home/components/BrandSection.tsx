@@ -1,14 +1,14 @@
 import { useMemo } from "react";
-import { Container, Typography, styled, useTheme } from "@mui/material";
 
-import { useCart } from "@/hooks";
-import BrandItem from "./BrandItem";
-import { Box, Headline } from "@/components";
 import {
   PRODUCTS,
   PRODUCT_CATEGORY_DETAIL,
   PRODUCT_CATEGORY_LISTING_TYPE,
 } from "@/interfaces";
+import { useCart } from "@/hooks";
+import BrandItem from "./BrandItem";
+import { Box, Headline } from "@/components";
+import { Container, styled } from "@mui/material";
 
 interface Props {
   productDetailData: PRODUCT_CATEGORY_DETAIL[];
@@ -45,6 +45,7 @@ export default function BrandSection({
         <WrapperTitle>
           <Headline title={subtitle} subTitle={title} />
         </WrapperTitle>
+
         {renderBrand}
       </StyledBox>
     </Wrapper>
@@ -53,7 +54,8 @@ export default function BrandSection({
 
 const Wrapper = styled(Container)(({ theme }) => {
   return {
-    margin: "80px 0",
+    margin: "0 auto",
+    padding: "80px 0 0 0",
   };
 });
 

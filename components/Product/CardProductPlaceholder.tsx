@@ -10,34 +10,33 @@ export default function CardProductPlaceholder() {
         height={250}
         animation="wave"
         variant="rounded"
-        sx={{ bgcolor: "#3C3C3C" }}
+        sx={{ bgcolor: theme.palette.skeleton.main }}
       />
 
       <Skeleton
         variant="rounded"
         height={20}
         animation="wave"
-        sx={{ bgcolor: "#3C3C3C" }}
+        sx={{ bgcolor: theme.palette.skeleton.main }}
       />
 
       <Skeleton
         variant="rounded"
         height={20}
         animation="wave"
-        sx={{ bgcolor: "#3C3C3C" }}
+        sx={{ bgcolor: theme.palette.skeleton.main }}
       />
     </StyledWrapper>
   );
 }
 
-const StyledWrapper = styled(Stack)(() => {
+const StyledWrapper = styled(Stack)(({ theme }) => {
   return {
     gap: 16,
     padding: "1rem",
     borderRadius: 8,
 
     overflow: "hidden",
-    border: "0.3px solid #fff",
-    backgroundColor: "#262626",
+    border: `0.3px solid ${theme.palette.text.primary}`,
   };
 });

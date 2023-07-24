@@ -1,25 +1,122 @@
+import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
+import { useMountedState } from "react-use";
 import React, { useCallback, useState } from "react";
 
+import { clone } from "lodash";
 import { Container, Grid, styled, Stack, Typography, Button } from "@mui/material";
 
 import ModalVAT from "./components/ModalVAT";
 import CheckVAT from "./components/CheckVAT";
 import FormOrder from "./components/FormOrder";
-import OrderItem from "./components/OrderItem";
-import { Headline, Spacing, VNDCurrency } from "@/components";
+import OrderSection from "./components/OrderSection";
+import { Headline, LoadingButton, Spacing, VNDCurrency } from "@/components";
 
-import { useToggle } from "@/hooks";
-import { VATSchemaProps } from "@/yups";
+import { CART_API } from "@/apis";
+import axiosConfig from "../../axios.config";
+import { useCart, useNotification, useToggle } from "@/hooks";
+
+import {
+  OrderSchema,
+  VATSchemaProps,
+  OrderSchemaProps,
+  DefaultOrderFormState,
+} from "@/yups";
 
 export default function Order() {
-  const { control, handleSubmit, setValue, watch } = useForm();
-  const [checkVAT, setCheckVAT] = useState(false);
-  const [dataVAT, setDataVAT] = useState<VATSchemaProps[]>([]);
+  const router = useRouter();
+  const { cartKey } = useCart();
+  const isMounted = useMountedState();
 
+  const [checkVAT, setCheckVAT] = useState(false);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [dataVAT, setDataVAT] = useState<VATSchemaProps[]>([]);
   const { on: openVAT, toggleOff: onCloseVAT, toggleOn: onOpenVAT } = useToggle();
 
-  const onSubmit = useCallback(async () => {}, []);
+  const { loading, setLoading, enqueueSnackbarWithError, enqueueSnackbarWithSuccess } =
+    useNotification();
+
+  const { control, handleSubmit, setValue, watch, reset } = useForm({
+    resolver: OrderSchema(),
+    defaultValues: DefaultOrderFormState(),
+  });
+
+  const onSubmit = useCallback(
+    async (values: OrderSchemaProps) => {
+      try {
+        setLoading(true);
+
+        const { address, district, email, name, phone_number, province, ward, note } =
+          values;
+
+        const data = {
+          status: 2,
+          customer_name: name,
+          customer_phone_number: phone_number,
+          customer_email: email,
+          customer_address: address,
+          customer_province: province?.code,
+          customer_district: district?.code,
+          customer_ward: ward?.code,
+          customer_note: note,
+          requested_export_tax: false,
+        };
+
+        if (checkVAT) {
+          if (dataVAT == undefined) return;
+
+          const {
+            name: export_tax_name,
+            address: export_tax_address,
+            tax_code: export_tax_identification_number,
+            companyName: export_tax_company_name,
+            email: export_tax_email,
+            phone_number: export_tax_phone_number,
+          } = dataVAT[0];
+
+          let dataHaveVAT = {
+            ...data,
+            requested_export_tax: true,
+            export_tax_name,
+            export_tax_address,
+            export_tax_identification_number,
+            export_tax_company_name,
+            export_tax_email,
+            export_tax_phone_number,
+          };
+
+          await axiosConfig.patch(CART_API, dataHaveVAT, {
+            headers: {
+              "X-Cart-Key": cartKey,
+            },
+          });
+        } else {
+          let dataNoVat = clone(data);
+
+          await axiosConfig.patch(CART_API, dataNoVat, {
+            headers: {
+              "X-Cart-Key": cartKey,
+            },
+          });
+        }
+
+        reset(DefaultOrderFormState, {
+          keepDirty: false,
+        });
+
+        enqueueSnackbarWithSuccess("Đặt hàng thành công");
+
+        router.push("/order/success");
+      } catch (error) {
+        enqueueSnackbarWithError(error);
+      } finally {
+        if (isMounted()) {
+          setLoading(false);
+        }
+      }
+    },
+    [cartKey, checkVAT, dataVAT]
+  );
 
   return (
     <StyledContainer>
@@ -33,12 +130,7 @@ export default function Order() {
         </Grid>
         <Grid item xs={4}>
           <Stack gap="32px">
-            <StyledWrapperOrderItem>
-              <OrderItem />
-              <OrderItem />
-              <OrderItem />
-              <OrderItem />
-            </StyledWrapperOrderItem>
+            <OrderSection setTotalPrice={setTotalPrice} />
 
             <CheckVAT
               checkVAT={checkVAT}
@@ -53,13 +145,17 @@ export default function Order() {
               <StyledWrapperTotalPrice>
                 <StyledText>Tổng Tiền:</StyledText>
 
-                <StyledTotalPrice value={170000} />
+                <StyledTotalPrice value={totalPrice} />
               </StyledWrapperTotalPrice>
             </StyledCenter>
 
-            <StyledButton type="submit" onClick={handleSubmit(onSubmit)}>
-              Đặt Hàng
-            </StyledButton>
+            {loading ? (
+              <LoadingButton fullWidth={true} />
+            ) : (
+              <StyledButton type="submit" onClick={handleSubmit(onSubmit)}>
+                Đặt Hàng
+              </StyledButton>
+            )}
           </Stack>
         </Grid>
       </Grid>
@@ -71,12 +167,6 @@ const StyledContainer = styled(Container)(() => {
   return {
     paddingTop: 180,
     paddingBottom: 80,
-  };
-});
-
-const StyledWrapperOrderItem = styled(Stack)(() => {
-  return {
-    gap: 16,
   };
 });
 

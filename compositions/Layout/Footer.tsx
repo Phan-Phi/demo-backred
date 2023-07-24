@@ -166,12 +166,21 @@ export default function Footer() {
           </Grid>
 
           <Grid item xs={2}>
-            <Stack spacing={2}>
+            <Stack spacing={2} height="100%" justifyContent="space-between">
               {/* <Box width={80} height={80} marginBottom={1} /> */}
-              <Title>TMĐT</Title>
-              <Stack direction="row" spacing={0.5}>
-                {renderEcomIcon}
-              </Stack>
+              <Box>
+                <Title>TMĐT</Title>
+
+                <Stack direction="row" spacing={0.5}>
+                  {renderEcomIcon}
+                </Stack>
+              </Box>
+
+              <ImageRatio
+                ratio="0"
+                imageProps={{ src: "/image/BCT.png" }}
+                boxProps={{ width: "105px", height: "40px" }}
+              />
             </Stack>
           </Grid>
         </Grid>

@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+
 import { styled } from "@mui/material";
 
 import Header from "./Header";
@@ -14,7 +15,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <MainPage>
-      <LoadingPage />
+      {/* <LoadingPage /> */}
       <Header />
       <MainContent className="main-content">{children}</MainContent>
       <Footer />

@@ -1,96 +1,179 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+
+import useSWR from "swr";
+import { get } from "lodash";
 import { Box, Button, Stack, Typography, styled } from "@mui/material";
 
 import Variant from "./Variant";
+import { RenderHTML } from "@/compositions";
 import { CounterInput, SVG, VNDCurrency } from "@/components";
 
+import {
+  PRODUCTS,
+  CART_ITEM_TYPE,
+  responseSchema,
+  PRODUCTS_VARIANTS,
+} from "@/interfaces";
+
 import { BUTTON } from "@/constants";
-import { useNotification } from "@/hooks";
+import { CART_ITEM_API } from "@/apis";
+import axiosConfig from "../../../axios.config";
+import { useCart, useNotification } from "@/hooks";
 
-const fake_data = [
-  {
-    id: 1,
-    name: "Nhân Trứng",
-  },
-  {
-    id: 1,
-    name: "Nhân Bò",
-  },
-  {
-    id: 1,
-    name: "Nhân Cá",
-  },
-  {
-    id: 1,
-    name: "Nhân Heo",
-  },
-];
+type CURRENT_VARIANT_TYPE = {
+  id: number;
+  price: string;
+  name: string;
+};
 
-export default function InfoProduct() {
+type InfoProductProps = {
+  dataProduct: PRODUCTS;
+  dataVariants: PRODUCTS_VARIANTS[];
+};
+
+export default function InfoProduct(props: InfoProductProps) {
+  const { dataProduct, dataVariants } = props;
+
+  const unitProduct = get(dataProduct, "unit");
+  const titleProduct = get(dataProduct, "title");
+  const dataDesc = get(dataProduct, "description");
+
+  const { cartKey, fetcher, isExported } = useCart();
+  const { enqueueSnackbar } = useNotification();
+
   const [quantity, setQuantity] = useState(1);
-  const [currentVariant, setCurrentVariant] = useState(0);
-  const { enqueueSnackbarWithSuccess } = useNotification();
   const [isLoading, setIsLoading] = useState(false);
+  const [indexVariant, setIndexVariant] = useState(0);
+  const [currentVariant, setCurrentVariant] = useState<CURRENT_VARIANT_TYPE>();
 
+  const { data, mutate } = useSWR<responseSchema<CART_ITEM_TYPE>>(CART_ITEM_API, fetcher);
+
+  useEffect(() => {
+    if (dataVariants == undefined) return;
+
+    let newObj = {
+      id: dataVariants[0].id,
+      price: dataVariants[0].price,
+      name: dataVariants[0].name,
+    };
+
+    setIndexVariant(0);
+    setCurrentVariant(newObj);
+  }, [dataVariants]);
+
+  // Handler
   const handleGetCurrentVariant = useCallback(
-    (index: number) => () => {
-      setCurrentVariant(index);
+    (index: number, obj: { id: number; price: string; name: string }) => () => {
+      setIndexVariant(index);
+      setCurrentVariant(obj);
     },
     []
   );
 
-  const renderVariant = useMemo(() => {
-    if (fake_data == undefined) return null;
+  const handleAddToCart = useCallback(async () => {
+    if (currentVariant == undefined) return;
 
-    return fake_data.map((item, index) => {
-      return (
-        <Variant
-          key={index}
-          onClick={handleGetCurrentVariant(index)}
-          checked={index === currentVariant ? true : false}
-        >
-          {item.name}
-        </Variant>
-      );
-    });
-  }, [fake_data, currentVariant]);
+    if (data == undefined) return;
 
-  const handleAddToCart = useCallback(() => {
     setIsLoading(true);
 
     setTimeout(() => {
       setIsLoading(false);
     }, 3000);
-    // enqueueSnackbarWithSuccess("Thêm sản phẩm vào giỏ hàng thành công");
-  }, []);
+
+    const isExisted = data.items.some((item) => {
+      return item.variant === currentVariant.id;
+    });
+
+    if (isExisted) {
+      const currentCartItem = data.items.filter(
+        (item) => item.variant === currentVariant.id
+      );
+
+      const idOfCartItem = currentCartItem[0].id;
+      const quantityOfCartItem = currentCartItem[0].quantity;
+
+      let updateData = {
+        quantity: quantityOfCartItem + quantity,
+      };
+
+      await axiosConfig.patch(`${CART_ITEM_API}${idOfCartItem}`, updateData, {
+        headers: {
+          "X-Cart-Key": cartKey,
+        },
+      });
+    } else {
+      let data = {
+        variant: currentVariant.id,
+        quantity: quantity,
+      };
+
+      await axiosConfig.post(CART_ITEM_API, data, {
+        headers: {
+          "X-Cart-Key": cartKey,
+        },
+      });
+    }
+
+    mutate();
+
+    enqueueSnackbar("", { variant: "addToCart" });
+  }, [currentVariant, quantity, cartKey, data]);
+
+  // Render
+  const renderDesc = useMemo(() => {
+    if (dataDesc == undefined) return null;
+
+    return dataDesc.map((item, index) => {
+      return <RenderHTML key={index} data={item.value} />;
+    });
+  }, [dataDesc]);
+
+  const renderVariant = useMemo(() => {
+    if (dataVariants == undefined) return null;
+
+    return dataVariants.map((item, index) => {
+      const { name, id, price } = item;
+
+      let newObj = {
+        id,
+        price,
+        name,
+      };
+
+      return (
+        <Variant
+          key={index}
+          onClick={handleGetCurrentVariant(index, newObj)}
+          checked={index === indexVariant ? true : false}
+        >
+          {name}
+        </Variant>
+      );
+    });
+  }, [dataVariants, indexVariant]);
+
+  if (dataVariants == undefined) return null;
 
   return (
     <StyledWrapperInfo>
       <Stack gap="8px">
-        <StyledTitle className="product-detail__title">
-          Cá Viên Nhân Sốt Mayonnaise
-        </StyledTitle>
+        <StyledTitle className="product-detail__title">{titleProduct || ""}</StyledTitle>
 
         <StyledSubTitle className="product-detail__sub-title">
-          12 viên / hộp
+          {unitProduct || ""}
         </StyledSubTitle>
 
-        <StyledPrice className="product-detail__price" value={35000} />
+        <StyledPrice
+          className="product-detail__price"
+          value={parseFloat(currentVariant?.price as string)}
+        />
       </Stack>
 
       <Stack gap="12px">
         <StyledText className="product-detail__text">Mô Tả</StyledText>
 
-        <StyledDesc>
-          Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
-          Ipsum has been the industry standard dummy text ever since the 1500s, when an
-          unknown printer took a galley of type and scrambled it to make a type specimen
-          book. It has survived not only five centuries, but also the leap into electronic
-          typesetting, remaining essentially unchanged. It was popularised in the 1960s
-          with the release of Letraset sheets containing Lorem Ipsum passages, and more
-          recently with desktop publishing software like Aldus PageMaker including
-          versions of Lorem Ipsum.
-        </StyledDesc>
+        {renderDesc}
       </Stack>
 
       <Stack gap="12px">
@@ -105,20 +188,21 @@ export default function InfoProduct() {
         <StyledText className="product-detail__text">Số Lượng</StyledText>
 
         <WrapperCounterInput>
-          <CounterInput
-            value={quantity}
-            onValueChange={setQuantity}
-            // onValueChangeDelete={setQuantity}
-          />
+          <CounterInput value={quantity} onValueChange={setQuantity} />
         </WrapperCounterInput>
       </Stack>
 
-      <StyledButton
-        onClick={handleAddToCart}
-        endIcon={isLoading ? <ShoppingCartIcon /> : null}
-      >
-        {isLoading ? BUTTON.BOUGHT : BUTTON.BUY}
-      </StyledButton>
+      {isExported ? (
+        <StyledButton>Liên Hệ</StyledButton>
+      ) : (
+        <StyledButton
+          isLoading={isLoading}
+          onClick={handleAddToCart}
+          endIcon={isLoading ? <ShoppingCartIcon /> : null}
+        >
+          {isLoading ? BUTTON.BOUGHT : BUTTON.BUY}
+        </StyledButton>
+      )}
     </StyledWrapperInfo>
   );
 }
@@ -141,6 +225,7 @@ const StyledTitle = styled(Typography)(({ theme }) => {
   return {
     ...theme.typography.h6,
     fontWeight: 700,
+    color: theme.palette.text.primary,
   };
 });
 
@@ -148,7 +233,7 @@ const StyledSubTitle = styled(Typography)(({ theme }) => {
   return {
     ...theme.typography.p_medium,
     fontWeight: 600,
-    color: "#676767",
+    color: theme.palette.secondary.light,
   };
 });
 
@@ -156,7 +241,7 @@ const StyledPrice = styled(VNDCurrency)(({ theme }) => {
   return {
     ...theme.typography.h4,
     fontWeight: 700,
-    color: "#fff",
+    color: theme.palette.text.primary,
   };
 });
 
@@ -164,13 +249,7 @@ const StyledText = styled(Typography)(({ theme }) => {
   return {
     ...theme.typography.p_medium,
     fontWeight: 600,
-  };
-});
-
-const StyledDesc = styled(Typography)(({ theme }) => {
-  return {
-    ...theme.typography.p_small,
-    fontWeight: 500,
+    color: theme.palette.text.primary,
   };
 });
 
@@ -180,13 +259,20 @@ const WrapperCounterInput = styled(Box)(() => {
   };
 });
 
-const StyledButton = styled(Button)(() => {
+const StyledButton = styled(Button, {
+  shouldForwardProp: (propName) => propName !== "isLoading",
+})<{ isLoading?: boolean }>(({ isLoading }) => {
   return {
-    textTransform: "none",
     minHeight: 43,
+    textTransform: "none",
 
     ["& .MuiButton-endIcon"]: {
       marginTop: 4,
     },
+
+    ...(isLoading && {
+      cursor: "default",
+      pointerEvents: "none",
+    }),
   };
 });

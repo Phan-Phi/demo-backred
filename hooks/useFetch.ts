@@ -1,15 +1,14 @@
 import { useEffect } from "react";
 import { SWRConfiguration } from "swr";
-import queryString from "query-string";
 
-import { transformUrl } from "@/libs";
+import { ResponseErrorType, ResponseType } from "interfaces/UseFetch";
+
 import useFetchBase from "./useFetchBase";
-import { ResponseErrorType, ResponseType } from "@/interfaces/UseFetch";
 
-const useFetch = <
+const useFetchProduct = <
   T = any,
   V extends ResponseType<T> = ResponseType<T>,
-  Error = ResponseErrorType
+  Error = ResponseErrorType,
 >(
   key?: string,
   options?: SWRConfiguration
@@ -37,37 +36,13 @@ const useFetch = <
     if (isValidating) return;
     if (resData == undefined) return;
 
-    const { items, page, totalPages } = resData;
+    const { next, previous, items, meta } = resData;
 
     setData(items);
+    fetchRef.current.previousPage = previous;
+    fetchRef.current.nextPage = next;
 
-    const { query, url } = queryString.parseUrl(key);
-
-    const nextPage = page + 1;
-    const prevPage = page - 1;
-
-    if (nextPage > totalPages) {
-      fetchRef.current.nextPage = null;
-    } else {
-      const nextUrl = transformUrl(url, {
-        ...query,
-        page: nextPage,
-      });
-
-      fetchRef.current.nextPage = nextUrl;
-    }
-
-    if (prevPage < 1) {
-      fetchRef.current.previousPage = null;
-    } else {
-      const prevUrl = transformUrl(url, {
-        ...query,
-        page: prevPage,
-      });
-      fetchRef.current.previousPage = prevUrl;
-    }
-
-    if (page === totalPages) {
+    if (next == null) {
       setIsDone(true);
     } else {
       setIsDone(false);
@@ -89,4 +64,4 @@ const useFetch = <
     fetchPreviousPage,
   };
 };
-export default useFetch;
+export default useFetchProduct;

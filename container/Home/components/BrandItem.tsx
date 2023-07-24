@@ -27,7 +27,7 @@ export default function BrandItem({ logo, productList, id, isExported }: Props) 
         </Grid>
       );
     });
-  }, [productList]);
+  }, [productList, isExported]);
 
   return (
     <Stack justifyContent="center" spacing={2.5}>

@@ -1,21 +1,24 @@
 import React from "react";
 import { Controller } from "react-hook-form";
-import { FieldValues, Control, UseFormSetValue, UseFormWatch } from "react-hook-form";
+import { Control, UseFormSetValue, UseFormWatch } from "react-hook-form";
 
-import { Box, styled } from "@mui/material";
+import { Box, FormLabel, styled, Typography } from "@mui/material";
 
 import {
+  Ward,
   District,
+  Province,
   FormControl,
   FormControlForPhoneNumber,
-  Province,
-  Ward,
 } from "@/compositions";
+import { Stack } from "@/components";
+
+import { OrderSchemaProps } from "@/yups";
 
 type FormOrderProps = {
-  control: Control<FieldValues, any>;
-  setValue: UseFormSetValue<FieldValues>;
-  watch: UseFormWatch<FieldValues>;
+  control: Control<OrderSchemaProps, any>;
+  setValue: UseFormSetValue<OrderSchemaProps>;
+  watch: UseFormWatch<any>;
 };
 
 export default function FormOrder(props: FormOrderProps) {
@@ -119,7 +122,7 @@ export default function FormOrder(props: FormOrderProps) {
           return (
             <FormControl
               controlState={props}
-              label="Ghi chú giao hàng"
+              label="Ghi chú giao hàng (không bắt buộc)"
               InputProps={{
                 multiline: true,
                 rows: 8,
@@ -140,3 +143,29 @@ const StyledForm = styled(Box)(() => {
     flexDirection: "column",
   };
 });
+
+const StyledLabel = styled(Typography)(({ theme }) => {
+  return {
+    ...theme.typography.p_small,
+    fontWeight: 500,
+  };
+});
+
+const StyledSmallLabel = styled(Typography)(({ theme }) => {
+  return {
+    ...theme.typography.p_xSmall,
+    fontStyle: "italic",
+  };
+});
+
+const LabelNote = ({ htmlFor }: { htmlFor: string }) => {
+  return (
+    <FormLabel htmlFor="note">
+      <Stack flexDirection="row" gap="4px" alignItems="baseline">
+        <StyledLabel>Ghi chú giao hàng</StyledLabel>
+
+        <StyledSmallLabel>(không bắt buộc)</StyledSmallLabel>
+      </Stack>
+    </FormLabel>
+  );
+};

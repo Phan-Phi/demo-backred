@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import React, { useCallback, useMemo } from "react";
+import React, { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 
 import { Container, styled, Stack, Button, Typography } from "@mui/material";
 
@@ -9,63 +9,63 @@ import { useCart } from "@/hooks";
 import { ROUTES } from "@/routes";
 import { BUTTON } from "@/constants";
 
-const fake_data = [
-  {
-    id: 1,
-    name: "Kem",
-    price: 1000,
-    quantityOfProduct: 4,
-  },
-  {
-    id: 2,
-    name: "Bánh",
-    price: 250,
-    quantityOfProduct: 4,
-  },
-  {
-    id: 3,
-    name: "Trà",
-    price: 9999,
-    quantityOfProduct: 4,
-  },
-  {
-    id: 4,
-    name: "Gạo",
-    price: 100230,
-    quantityOfProduct: 4,
-  },
-  {
-    id: 5,
-    name: "Gạo",
-    price: 100230,
-    quantityOfProduct: 4,
-  },
-];
+import { CART_ITEM_API } from "@/apis";
+import axiosConfig from "../../axios.config";
+import { CART_ITEM_TYPE, responseSchema } from "@/interfaces";
+
+import useSWR from "swr";
+import { isEmpty } from "lodash";
 
 export default function Cart() {
   const router = useRouter();
-  const { cart, totalPrice } = useCart();
+  const { cartKey, fetcher } = useCart();
+
+  const [totalPrice, setTotalPrice] = useState(0);
+
+  const { data, mutate } = useSWR<responseSchema<CART_ITEM_TYPE>>(CART_ITEM_API, fetcher);
+
+  useEffect(() => {
+    if (data == undefined) return;
+
+    const result = data.items.reduce((total, item) => {
+      return total + parseFloat(item.variant_price) * item.quantity;
+    }, 0);
+
+    setTotalPrice(result);
+  }, [data]);
 
   const onRedirect = useCallback(() => {
     router.push(`/${ROUTES.order}`);
   }, []);
 
-  const renderCartItem = useMemo(() => {
-    if (fake_data == undefined) return null;
+  const handleDeleteCartItem = useCallback(async (id: number) => {
+    await axiosConfig.delete(`${CART_ITEM_API}${id}`, {
+      headers: {
+        "X-Cart-Key": cartKey,
+      },
+    });
 
-    return fake_data.map((item) => {
+    mutate();
+  }, []);
+
+  const renderCartItem = useMemo(() => {
+    if (data == undefined) return null;
+
+    return data.items.map((item) => {
       return (
         <CartItem
+          mutate={mutate}
           key={item.id}
           id={item.id}
-          name={item.name}
-          price={item.price}
-          quantityOfProduct={item.quantityOfProduct}
-          onDeleteItem={() => {}}
+          variantId={item.variant}
+          name={item.variant_name}
+          price={item.variant_price}
+          quantityOfProduct={item.quantity}
+          onDeleteItem={() => handleDeleteCartItem(item.id)}
         />
       );
     });
-  }, [fake_data]);
+  }, [data]);
 
   return (
     <StyledContainer>
@@ -73,16 +73,24 @@ export default function Cart() {
 
       <Spacing spacing={5} />
 
-      <StyledStack>{renderCartItem}</StyledStack>
+      {isEmpty(data?.items) ? (
+        <StyledCenter>
+          <StyledTitle>Giỏ hàng hiện đang trống</StyledTitle>
+        </StyledCenter>
+      ) : (
+        <Fragment>
+          <StyledStack>{renderCartItem}</StyledStack>
 
-      <StyledRight>
-        <StyledWrapperPrice>
-          <StyledText>Tổng Tiền:</StyledText>
+          <StyledRight>
+            <StyledWrapperPrice>
+              <StyledText>Tổng Tiền:</StyledText>
 
-          <StyledPrice value={170000} />
-        </StyledWrapperPrice>
-        <StyledButton onClick={onRedirect}>{BUTTON.CONTINUE}</StyledButton>
-      </StyledRight>
+              <StyledPrice value={totalPrice} />
+            </StyledWrapperPrice>
+            <StyledButton onClick={onRedirect}>{BUTTON.CONTINUE}</StyledButton>
+          </StyledRight>
+        </Fragment>
+      )}
     </StyledContainer>
   );
 }
@@ -142,5 +150,19 @@ const StyledPrice = styled(VNDCurrency)(({ theme }) => {
     ...theme.typography.h5,
     fontWeight: 700,
     color: theme.palette.primary.main,
+  };
+});
+
+const StyledCenter = styled(Stack)(() => {
+  return {
+    alignItems: "center",
+    justifyContent: "center",
+  };
+});
+
+const StyledTitle = styled(Typography)(({ theme }) => {
+  return {
+    ...theme.typography.h4,
+    fontWeight: 600,
   };
 });

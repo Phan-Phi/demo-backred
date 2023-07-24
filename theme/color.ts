@@ -4,14 +4,14 @@ import { MODE_TYPE } from "@/contexts/ThemeMode";
 import { COLOR_PALETTE } from "@/configuration";
 
 export const getPaletteTheme = (mode: MODE_TYPE): ThemeOptions["palette"] => {
-  return mode === "light" ? LIGHT_MODE : DARK_MODE;
+  return mode === "dark" ? LIGHT_MODE : DARK_MODE;
 };
 
 const LIGHT_MODE: ThemeOptions["palette"] = {
   mode: "light",
   primary: {
     main: COLOR_PALETTE["brand-500"],
-    light: COLOR_PALETTE["brand-500"],
+    light: COLOR_PALETTE["brand-200"],
   },
 
   secondary: {
@@ -59,6 +59,7 @@ const DARK_MODE: ThemeOptions["palette"] = {
   mode: "dark",
   primary: {
     main: COLOR_PALETTE["brand-500"],
+    light: COLOR_PALETTE["brand-200"],
   },
 
   secondary: {

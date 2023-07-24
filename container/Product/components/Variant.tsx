@@ -40,7 +40,7 @@ const StyledVariant = styled(Button, {
     padding: "8px 16px",
 
     textTransform: "capitalize",
-    border: "1px solid #fff",
+    border: `1px solid ${theme.palette.text.primary}`,
     backgroundColor: "transparent",
 
     ["& .MuiButton-endIcon"]: {

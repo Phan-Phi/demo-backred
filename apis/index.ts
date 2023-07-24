@@ -28,6 +28,7 @@ export const TYPE_PARAMS = {
   "product.ProductCategoryListingPage": "product.ProductCategoryListingPage",
   "product.ProductCategoryDetailPage": "product.ProductCategoryDetailPage",
   "product.ProductPage": "product.ProductPage",
+  "contact.ContactPage": "contact.ContactPage",
 } as const;
 
 export const SETTING_API = `/${PREFIX}/`;

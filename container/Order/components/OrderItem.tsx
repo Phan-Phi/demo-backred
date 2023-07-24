@@ -1,30 +1,62 @@
 import React from "react";
+import { useRouter } from "next/router";
 
+import useSWR from "swr";
 import { Box, styled, Typography, Stack } from "@mui/material";
 
 import { Image, VNDCurrency } from "@/components";
-import { CARD_PRODUCT_BOX_SHADOW } from "@/constants";
 
-export default function OrderItem() {
+import { transformUrl } from "@/libs";
+import { CARD_PRODUCT_BOX_SHADOW } from "@/constants";
+import { PAGES_API, PRODUCTS_VARIANTS_API } from "@/apis";
+import { PRODUCTS, PRODUCTS_VARIANTS } from "@/interfaces";
+
+type OrderItemProps = {
+  id: number;
+  variantId: number;
+  name: string;
+  price: string;
+  quantity: number;
+};
+
+export default function OrderItem(props: OrderItemProps) {
+  const router = useRouter();
+  const { id, variantId, name, price, quantity } = props;
+
+  const { data: dataVariant } = useSWR<PRODUCTS_VARIANTS>(
+    `${PRODUCTS_VARIANTS_API}${variantId}`
+  );
+
+  const { data: dataProduct } = useSWR<PRODUCTS>(
+    transformUrl(`${PAGES_API}${dataVariant?.product}`, {
+      fields: "*",
+      locale: router.locale,
+    })
+  );
+
+  if (dataVariant == undefined || dataProduct == undefined) return null;
+
   return (
     <StyledWrapper className="order-item">
       <StyledStack>
         <Box position="relative" width={69} height={96}>
           <Image
-            alt="alt"
-            src="/image/cardProduct.png"
+            alt={dataVariant.name}
+            src={dataVariant.images[0].value}
             style={{ objectFit: "contain" }}
           />
 
           <StyledWrapperQuantity>
-            <StyledQuantity>12</StyledQuantity>
+            <StyledQuantity>{quantity}</StyledQuantity>
           </StyledWrapperQuantity>
         </Box>
 
-        <StyledTitle>Cá Viên Nhân Sốt Mayonnaise - Nhân Trứng</StyledTitle>
+        <StyledTitle>
+          {dataProduct.title} {name}
+        </StyledTitle>
       </StyledStack>
 
-      <StyledPrice value={35000} />
+      <StyledPrice value={parseFloat(price)} />
     </StyledWrapper>
   );
 }
@@ -54,8 +86,8 @@ const StyledStack = styled(Stack)(() => {
 
 const StyledWrapperQuantity = styled(Box)(() => {
   return {
-    top: 0,
-    right: 0,
+    top: -6,
+    right: -8,
     position: "absolute",
 
     width: 18,

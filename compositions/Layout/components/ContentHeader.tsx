@@ -1,11 +1,12 @@
 import { useRouter } from "next/router";
-import { Container, styled } from "@mui/material";
 
 import Search from "./Search";
+import DarkMode from "./DarkMode";
+import Language from "./Language";
+import { useSetting } from "@/hooks";
+import { Container, styled } from "@mui/material";
 import MenuItemForHeader from "./MenuItemForHeader";
 import { Box, CartIcon, Image, Link, Stack } from "@/components";
-import { useSetting } from "@/hooks";
-import DarkMode from "./DarkMode";
 
 export default function ContentHeader() {
   const setting = useSetting();
@@ -25,10 +26,10 @@ export default function ContentHeader() {
         </Link>
 
         <StyledStack spacing={2} direction="row">
-          <Search />
-          <Box>
-            <DarkMode />
-          </Box>
+          <Search isTypewriterEffect />
+          <DarkMode />
+          <Language />
+
           <Box
             onClick={() => {
               router.push("/cart");

@@ -1,4 +1,5 @@
 export const COLOR_PALETTE = {
+  "brand-200": "#a23f43",
   "brand-500": "#991b1f",
 
   "success-50": "#f0fdf4",

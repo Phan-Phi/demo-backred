@@ -5,10 +5,10 @@ export default function Line(props: BoxProps) {
   return <StyledLine {...props} />;
 }
 
-const StyledLine = styled(Box)(() => {
+const StyledLine = styled(Box)(({ theme }) => {
   return {
     height: 3,
     width: 60,
-    backgroundColor: "#991B1F",
+    backgroundColor: theme.palette.primary.main,
   };
 });

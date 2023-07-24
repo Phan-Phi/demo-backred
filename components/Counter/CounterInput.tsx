@@ -90,7 +90,7 @@ const StyledBox = styled(Box)(({ theme }) => {
     borderRadius: 3,
     borderWidth: 0.3,
     borderStyle: "solid",
-    borderColor: "#fff",
+    borderColor: theme.palette.text.primary,
 
     width: "auto",
     display: "flex",
@@ -125,7 +125,7 @@ const StyledMinus = styled(SVG)(() => {
   };
 });
 
-const StyledNumberFormat = styled(NumberFormat)(() => {
+const StyledNumberFormat = styled(NumberFormat)(({ theme }) => {
   return {
     padding: 10,
     width: 90,
@@ -137,15 +137,15 @@ const StyledNumberFormat = styled(NumberFormat)(() => {
     borderRightWidth: 0.3,
 
     borderStyle: "solid",
-    borderColor: "#fff",
+    borderColor: theme.palette.text.primary,
 
-    color: "#fff",
+    color: theme.palette.text.primary,
     outline: "none",
     backgroundColor: "transparent",
 
     ["& input"]: {
       padding: 0,
-      color: "#fff",
+      color: theme.palette.text.primary,
       textAlign: "center",
     },
   };

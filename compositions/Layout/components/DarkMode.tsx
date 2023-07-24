@@ -1,7 +1,8 @@
-import { Box, LightIcon, DarkIcon } from "@/components";
-import useThemeMode from "@/hooks/useThemeMode";
-import { styled } from "@mui/material";
 import { useState } from "react";
+
+import { styled } from "@mui/material";
+import useThemeMode from "@/hooks/useThemeMode";
+import { Box, LightIcon, DarkIcon, Stack } from "@/components";
 
 export default function DarkMode() {
   const { setMode } = useThemeMode();
@@ -19,7 +20,7 @@ export default function DarkMode() {
   );
 }
 
-const Wrapper = styled(Box)(({ theme }) => {
+const Wrapper = styled(Stack)(({ theme }) => {
   return {
     cursor: "pointer",
   };

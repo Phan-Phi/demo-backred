@@ -9,7 +9,8 @@ interface StyledMuiTabsProps extends MuiTabsProps {
 interface TabsProps<T> {
   value: T;
   children: React.ReactNode;
-  onChange: (event: React.SyntheticEvent, newValue: T) => void;
+  // onChange: (event: React.SyntheticEvent, newValue: T) => void;
+  onChange: any;
 }
 
 type DefaultTabsProps<T> = StyledMuiTabsProps & TabsProps<T>;

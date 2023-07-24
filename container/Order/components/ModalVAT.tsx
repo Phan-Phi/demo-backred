@@ -29,7 +29,7 @@ export default function ModalVAT(props: ModalVATProps) {
   });
 
   const onSubmit = useCallback((values: VATSchemaProps) => {
-    setDataVAT(values);
+    setDataVAT([values]);
 
     reset(DefaultVATFormState, {
       keepDirty: false,

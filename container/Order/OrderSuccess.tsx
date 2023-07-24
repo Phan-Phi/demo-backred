@@ -25,7 +25,7 @@ export default function OrderSuccess() {
 
 const StyledContainer = styled(Container)(() => {
   return {
-    paddingTop: 80,
+    paddingTop: 220,
     paddingBottom: 80,
   };
 });

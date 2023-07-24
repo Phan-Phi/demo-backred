@@ -1,57 +1,96 @@
-import { useUpdateEffect } from "react-use";
+import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 
+import useSWR, { KeyedMutator } from "swr";
 import { Box, Stack, Typography, styled } from "@mui/material";
 
 import Image from "../Image";
-import { useCart } from "@/hooks";
 import { CounterInput, SVG } from "..";
 import VNDCurrency from "../NumberFormat/VNDCurrency";
 
+import { useCart } from "@/hooks";
+import { transformUrl } from "@/libs";
+import axiosConfig from "../../axios.config";
+import { CART_ITEM_API, PAGES_API, PRODUCTS_VARIANTS_API } from "@/apis";
+
+import {
+  PRODUCTS,
+  responseSchema,
+  CART_ITEM_TYPE,
+  PRODUCTS_VARIANTS,
+} from "@/interfaces";
+
 type CartItemProps = {
-  id: number | string;
+  id: number;
+  variantId: number;
   name: string;
-  price: number;
+  price: string;
   quantityOfProduct: number;
   onDeleteItem: () => void;
+  mutate: KeyedMutator<responseSchema<CART_ITEM_TYPE>>;
 };
 
 export default function CartItem(props: CartItemProps) {
-  const { id, name, price, quantityOfProduct, onDeleteItem } = props;
+  const { id, variantId, name, price, quantityOfProduct, onDeleteItem, mutate } = props;
 
-  const { updateProductItem } = useCart();
+  const router = useRouter();
+  const { cartKey } = useCart();
   const [quantity, setQuantity] = useState(1);
+
+  const { data: dataVariant } = useSWR<PRODUCTS_VARIANTS>(
+    `${PRODUCTS_VARIANTS_API}${variantId}`
+  );
+
+  const { data: dataProduct } = useSWR<PRODUCTS>(
+    transformUrl(`${PAGES_API}${dataVariant?.product}`, {
+      fields: "*",
+      locale: router.locale,
+    })
+  );
 
   useEffect(() => {
     setQuantity(quantityOfProduct);
   }, [quantityOfProduct]);
 
-  useUpdateEffect(() => {
-    updateProductItem(id, quantity);
-  }, [id, quantity]);
+  useEffect(() => {
+    async function updateQuantity() {
+      await axiosConfig.patch(
+        `${CART_ITEM_API}${id}`,
+        { quantity },
+        {
+          headers: {
+            "X-Cart-Key": cartKey,
+          },
+        }
+      );
+      mutate();
+    }
+    updateQuantity();
+  }, [quantity]);
+
+  if (dataVariant == undefined || dataProduct == undefined) return null;
 
   return (
     <StyledWrapper className="cart-item">
       <StyledFirstColumn className="cart-item__first-column">
         <Box position="relative" width={69} height={96}>
-          <Image src="/image/cardProduct.png" alt="cart-item" />
+          <Image src={dataVariant.images[0].value} alt={dataVariant.name} />
         </Box>
 
-        <Stack>
-          <StyledText className="cart-item__title">{name}</StyledText>
-          <StyledText className="cart-item__variant">Mayonnaise - Nhân Trứng</StyledText>
+        <Stack width={200}>
+          <StyledText className="cart-item__title">{dataProduct.title}</StyledText>
+          <StyledText className="cart-item__variant">{name}</StyledText>
         </Stack>
       </StyledFirstColumn>
 
-      <StyledPrice className="cart-item__price" value={price} />
+      <StyledPrice className="cart-item__price" value={parseFloat(price)} />
 
-      <CounterInput
-        value={quantity}
-        onValueChange={setQuantity}
-        // onValueChangeDelete={setQuantity}
+      <CounterInput value={quantity} onValueChange={setQuantity} />
+
+      <StyledTotalPrice
+        className="cart-item__total-price"
+        value={quantity * parseFloat(price)}
       />
-
-      <StyledTotalPrice className="cart-item__total-price" value={quantity * price} />
 
       <StyledWrapperSVG onClick={onDeleteItem}>
         <SVG src="/svg/delete.svg" />
@@ -60,11 +99,11 @@ export default function CartItem(props: CartItemProps) {
   );
 }
 
-const StyledWrapper = styled(Box)(() => {
+const StyledWrapper = styled(Box)(({ theme }) => {
   return {
     padding: 16,
     borderRadius: 8,
-    border: "0.3px solid #fff",
+    border: `0.3px solid ${theme.palette.text.primary}`,
 
     display: "flex",
     flexDirection: "row",
@@ -86,14 +125,13 @@ const StyledText = styled(Typography)(({ theme }) => {
   return {
     ...theme.typography.p_medium,
     fontWeight: 600,
-    color: "#fff",
   };
 });
 
 const StyledPrice = styled(VNDCurrency)(({ theme }) => {
   return {
     ...theme.typography.p_small,
-    color: "#fff",
+    color: theme.palette.text.primary,
   };
 });
 
@@ -101,7 +139,7 @@ const StyledTotalPrice = styled(VNDCurrency)(({ theme }) => {
   return {
     ...theme.typography.p_large,
     fontWeight: 600,
-    color: "#fff",
+    color: theme.palette.text.primary,
 
     minWidth: 200,
     textAlign: "center",

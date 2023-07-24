@@ -55,23 +55,23 @@ export default function CardProductItem(props: CardProductItemProps) {
   );
 }
 
-const StyledWrapper = styled(Stack)(() => {
+const StyledWrapper = styled(Stack)(({ theme }) => {
   return {
     gap: 8,
     borderRadius: 8,
     padding: "1rem",
-    border: "0.3px solid #fff",
+    border: `0.3px solid ${theme.palette.text.primary}`,
 
     cursor: "pointer",
     boxShadow: CARD_PRODUCT_BOX_SHADOW,
+    backgroundColor: theme.palette.secondary.main,
   };
 });
 
 const StyledTitle = styled(Typography)(({ theme }) => {
   return {
-    ...theme.typography.h6,
-    fontWeight: 700,
-    color: "#fff",
+    ...theme.typography.p_medium,
+    fontWeight: 600,
 
     minHeight: 28 * 2,
     overflow: "hidden",
@@ -84,6 +84,6 @@ const StyledTitle = styled(Typography)(({ theme }) => {
 const StyledPrice = styled(VNDCurrency)(({ theme }) => {
   return {
     ...theme.typography.p_medium,
-    color: "#fff",
+    color: theme.palette.text.primary,
   };
 });

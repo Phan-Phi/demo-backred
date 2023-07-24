@@ -18,6 +18,7 @@ export let homePageSchema = object({
   local_cta: string().required(),
   export_image: string().required(),
   export_cta: string().required(),
+  banner_title: string().required(),
 });
 
 export type HomePage = InferType<typeof homePageSchema>;

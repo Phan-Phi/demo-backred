@@ -16,7 +16,7 @@ interface Props {
 export default function CardNew({ data }: Props) {
   const [ref, { height }] = useMeasure<HTMLDivElement>();
 
-  const { thumbnail, title, content, id } = data;
+  const { thumbnail, title, content, description, id } = data;
 
   return (
     <Wrapper heightHover={height}>
@@ -25,7 +25,7 @@ export default function CardNew({ data }: Props) {
         <Overlay className="overlay"></Overlay>
 
         <WrapperContent ref={ref} className="content">
-          <Content id={data.id} content={data.description} />
+          <Content id={id} content={description} />
         </WrapperContent>
 
         <Box sx={{ position: "absolute", bottom: "1rem", padding: "0 1rem" }}>

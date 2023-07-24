@@ -3,7 +3,7 @@ import { useCallback, useState } from "react";
 import { Modal, Typography, styled } from "@mui/material";
 
 import { getIdYoutube } from "@/libs";
-import { Box, Ratio, VideoIcon } from "@/components";
+import { Box, Ratio, Stack, VideoIcon } from "@/components";
 
 interface Props {
   img: string;
@@ -30,10 +30,10 @@ export default function VideoSection({ img, text, video }: Props) {
       <Ratio ratio="1200/500">
         <Overlay className="overlay" />
         <Content>
-          <VideoIcon
-            onClick={() => setOpen(true)}
-            sx={{ cursor: "pointer", width: "80px", height: "80px" }}
-          />
+          <WrapperVideo onClick={() => setOpen(true)}>
+            <VideoIcon />
+          </WrapperVideo>
+
           <Text>{text}</Text>
         </Content>
       </Ratio>
@@ -112,6 +112,27 @@ const WrapperModal = styled(Box)(({ theme }) => {
     height: "60%",
     "& div": {
       height: "100%",
+    },
+  };
+});
+
+const WrapperVideo = styled(Stack)(({ theme }) => {
+  return {
+    cursor: "pointer",
+    width: "80px",
+    height: "80px",
+    background: theme.palette.primary.main,
+    borderRadius: "100%",
+    margin: "0 auto",
+    justifyContent: "center",
+    alignItems: "center",
+    transition: " all .4s ease",
+    "&:hover ": {
+      background: theme.palette.primary.light,
+    },
+    "& svg": {
+      width: "35px",
+      height: "35px",
     },
   };
 });
